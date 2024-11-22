@@ -1,3 +1,4 @@
 webpack.config.js
+playwright.config.js
 node_modules/
 dist/
