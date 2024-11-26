@@ -25,5 +25,5 @@ jobs:
         env:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
         run: echo "$COMMIT_MESSAGES"
-      - name: check condition.1
+      - name: check condition
         run: echo ${{ env.CONDITION }}
