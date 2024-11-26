@@ -47,7 +47,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Bump version and push tag
         if: ${{ github.event_name == 'push' && env.ON_SKIP == 'false' }}
-        uses: anothrNick/github-tag-action@1.71.0
+        uses: anothrNick/github-tag-action@f278d49d30cdd8775cc3e7dd00b5ee11686ee297
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
