@@ -1,5 +1,8 @@
 name: Deployment pipeline
 
+env:
+  ON_SKIP: ${{ contains(join(github.event.commits.*.message), '#skip') }}
+
 on:
   push:
     branches:
@@ -35,7 +38,7 @@ jobs:
           path: playwright-report/
           retention-days: 30
       - name: Trigger deployment
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ github.event_name == 'push' && env.ON_SKIP == 'false' }}
         run:  curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
   tag_release:
     needs: simple_deployment_pipeline
@@ -43,8 +46,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Bump version and push tag
+        if: ${{ github.event_name == 'push' && env.ON_SKIP == 'false' }}
         uses: anothrNick/github-tag-action@1.71.0
-        if: ${{ github.event_name == 'push' }}
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
