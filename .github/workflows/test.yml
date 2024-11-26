@@ -26,4 +26,4 @@ jobs:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
         run: echo "$COMMIT_MESSAGES"
       - name: check condition
-        run: echo ${{ github.event.commits.*.message }}
+        run: echo ${{ join(github.event.commits.*.message, ',') }}
