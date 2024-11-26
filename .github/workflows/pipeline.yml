@@ -42,10 +42,10 @@ jobs:
     runs-on: ubuntu-20.04 
     steps:
       - name: Bump version and push tag
-        if: ${{ github.event.name == 'push' }}
+        if: ${{ github.event_name == 'push' }}
       - uses: anothrNick/github-tag-action@v1
         env: 
-          GITHUB_TOKEN: ${{ secrets.github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
           DEFAULT_BUMP: patch
 
       
