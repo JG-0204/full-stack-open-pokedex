@@ -26,58 +26,58 @@ jobs:
         run: npm run eslint
       - name: build
         run: npm run build
-      # - name: test
-      #   run: npm test
-      # - name: Install playwright browsers
-      #   run: npx playwright install --with-deps
-      # - name: End-to-End test
-      #   run: npm run test:e2e
-      # - uses: actions/upload-artifact@v4
-      #   if: ${{ !cancelled() }}
-      #   with:
-      #     name: playwright-report
-      #     path: playwright-report/
-      #     retention-days: 30
-      # - name: Trigger deployment
-      #   if: ${{ github.event_name == 'push' && env.ON_SKIP == 'false' }}
-      #   run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
-      # - name: On deployment failure
-      #   if: ${{ failure() }}
-      #   uses: sarisia/actions-status-discord@33dfe58bd6a779c49926a82a2c008bab1ca733ee
-      #   with:
-      #     webhook: ${{ secrets.DISCORD_WEBHOOK }}
-      #     username: 'FSOPokedex'
-      #     title: 'Build failed'
-      #     nodetail: true
-      #     status: 'failure'
-      #     description: Commit ${{ env.COMMIT_URL }} by ${{ github.actor }} broke the build.
-      #     content: 'Something went wrong'
+      - name: test
+        run: npm test
+      - name: Install playwright browsers
+        run: npx playwright install --with-deps
+      - name: End-to-End test
+        run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+      - name: Trigger deployment
+        if: ${{ github.event_name == 'push' && env.ON_SKIP == 'false' }}
+        run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
+      - name: On deployment failure
+        if: ${{ failure() }}
+        uses: sarisia/actions-status-discord@33dfe58bd6a779c49926a82a2c008bab1ca733ee
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          username: 'FSOPokedex'
+          title: 'Build failed'
+          nodetail: true
+          status: 'failure'
+          description: Commit ${{ env.COMMIT_URL }} by ${{ github.actor }} broke the build.
+          content: 'Something went wrong'
 
-    # tag_release:
-    #   needs: simple_deployment_pipeline
-    #   runs-on: ubuntu-20.04
-    #   steps:
-    #     - uses: actions/checkout@v4
-    #     - name: Bump version and push tag
-    #       if: ${{ github.event_name == 'push' && env.ON_SKIP == 'false' }}
-    #       uses: anothrNick/github-tag-action@f278d49d30cdd8775cc3e7dd00b5ee11686ee297
-    #       env:
-    #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #         DEFAULT_BUMP: patch
+    tag_release:
+      needs: simple_deployment_pipeline
+      runs-on: ubuntu-20.04
+      steps:
+        - uses: actions/checkout@v4
+        - name: Bump version and push tag
+          if: ${{ github.event_name == 'push' && env.ON_SKIP == 'false' }}
+          uses: anothrNick/github-tag-action@f278d49d30cdd8775cc3e7dd00b5ee11686ee297
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            DEFAULT_BUMP: patch
 
-    # on_deployment_success:
-    #   needs: simple_deployment_pipeline
-    #   runs-on: ubuntu-20.04
-    #   steps:
-    #     - uses: actions/checkout@v4
-    #     - name: On deployment success
-    #       if: ${{ !failure() && env.ON_SKIP == 'false'}}
-    #       uses: sarisia/actions-status-discord@33dfe58bd6a779c49926a82a2c008bab1ca733ee
-    #       with:
-    #         webhook: ${{ secrets.DISCORD_WEBHOOK }}
-    #         title: 'Build success'
-    #         username: 'FSOPokedex'
-    #         nodetail: true
-    #         status: 'success'
-    #         description: New version of Pokedex deployed on [here](https://full-stack-open-pokedex-e0i8.onrender.com/) by ${{ github.actor }}
-    #         content: 'Deployment successful.'
+    on_deployment_success:
+      needs: simple_deployment_pipeline
+      runs-on: ubuntu-20.04
+      steps:
+        - uses: actions/checkout@v4
+        - name: On deployment success
+          if: ${{ !failure() && env.ON_SKIP == 'false'}}
+          uses: sarisia/actions-status-discord@33dfe58bd6a779c49926a82a2c008bab1ca733ee
+          with:
+            webhook: ${{ secrets.DISCORD_WEBHOOK }}
+            title: 'Build success'
+            username: 'FSOPokedex'
+            nodetail: true
+            status: 'success'
+            description: New version of Pokedex deployed on [here](https://full-stack-open-pokedex-e0i8.onrender.com/) by ${{ github.actor }}
+            content: 'Deployment successful.'

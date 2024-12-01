@@ -1,38 +1,38 @@
-name: Application health check
+# name: Application health check
 
-on:
-  schedule:
-    - cron: '55,0,5,10 * * * *'
+# on:
+#   schedule:
+#     - cron: '55,0,5,10 * * * *'
 
-jobs:
-  health_check:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v4
-      - name: Health Check
-        uses: jtalk/url-health-check-action@b716ccb6645355dd9fcce8002ce460e5474f7f00
-        with:
-          url: https://full-stack-open-pokedex-e0i8.onrender.com/health
-          max-attemps: 3
-      - name: On health check failure
-        if: ${{ failure() }}
-        uses: sarisia/actions-status-discord@33dfe58bd6a779c49926a82a2c008bab1ca733ee
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          username: 'FSOPokedex'
-          title: 'Health check information'
-          nodetail: true
-          status: 'failure'
-          description: 'Health check failed'
-          content: 'FSOPokedex health check'
-      - name: On health check success
-        if: ${{ success() }}
-        uses: sarisia/actions-status-discord@33dfe58bd6a779c49926a82a2c008bab1ca733ee
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          username: 'FSOPokedex'
-          title: 'Health check information'
-          nodetail: true
-          status: 'success'
-          description: 'Health check passed'
-          content: 'FSOPokedex health check (test, should run every 5 mins starting at minute 55)'
+# jobs:
+#   health_check:
+#     runs-on: ubuntu-20.04
+#     steps:
+#       - uses: actions/checkout@v4
+#       - name: Health Check
+#         uses: jtalk/url-health-check-action@b716ccb6645355dd9fcce8002ce460e5474f7f00
+#         with:
+#           url: https://full-stack-open-pokedex-e0i8.onrender.com/health
+#           max-attemps: 3
+#       - name: On health check failure
+#         if: ${{ failure() }}
+#         uses: sarisia/actions-status-discord@33dfe58bd6a779c49926a82a2c008bab1ca733ee
+#         with:
+#           webhook: ${{ secrets.DISCORD_WEBHOOK }}
+#           username: 'FSOPokedex'
+#           title: 'Health check information'
+#           nodetail: true
+#           status: 'failure'
+#           description: 'Health check failed'
+#           content: 'FSOPokedex health check'
+#       - name: On health check success
+#         if: ${{ success() }}
+#         uses: sarisia/actions-status-discord@33dfe58bd6a779c49926a82a2c008bab1ca733ee
+#         with:
+#           webhook: ${{ secrets.DISCORD_WEBHOOK }}
+#           username: 'FSOPokedex'
+#           title: 'Health check information'
+#           nodetail: true
+#           status: 'success'
+#           description: 'Health check passed'
+#           content: 'FSOPokedex health check (test, should run every 5 mins starting at minute 55)'
