@@ -5,14 +5,15 @@ env:
   COMMIT_URL: https://github.com/JG-0204/full-stack-open-pokedex/commit/${{ github.sha }}
 
 on:
+  schedule:
+    - cron: '30 16 1 12 0'
   push:
     branches:
       - main
   pull_request:
     branches: [main]
     types: [opened, synchronize]
-  schedule:
-    - cron: '30 16 1 12 0'
+
 
 jobs:
   simple_deployment_pipeline:
@@ -90,8 +91,8 @@ jobs:
       needs: simple_deployment_pipeline
       runs-on: ubuntu-20.04
       steps:
-        uses: actions/checkout@v4
-      - name: Health Check
+        - uses: actions/checkout@v4
+        - name: Health Check
         if: ${{ github.event.schedule == '30 16 1 12 0' }}
         uses: jtalk/url-health-check-action@b716ccb6645355dd9fcce8002ce460e5474f7f00
         with:
