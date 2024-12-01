@@ -45,12 +45,12 @@ jobs:
         if: ${{ failure() }}
         uses: rjstone/discord-webhook-notify@89b0bf43c2c8514f70d0dcba4a706b904e8a3112
         with:
-          severity: error
-          username: FullStackOpen_Pokedex
-          description: Commit ${{ env.COMMIT_URL }} by ${{ github.actor }} broke the build.
-          text: Build failed
-          footer: 'Severity: Error'
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+            severity: error
+            username: FullStackOpen_Pokedex
+            description: Commit ${{ env.COMMIT_URL }} by ${{ github.actor }} broke the build.
+            text: Build failed
+            footer: 'Severity: Error'
+            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
 
   tag_release:
     needs: simple_deployment_pipeline
@@ -73,9 +73,9 @@ jobs:
         if: ${{ success() }}
         uses: rjstone/discord-webhook-notify@89b0bf43c2c8514f70d0dcba4a706b904e8a3112
         with:
-          severity: info
-          username: FullStackOpen_Pokedex
-          description: New version of Pokedex deployed on https://full-stack-open-pokedex-e0i8.onrender.com/ by ${{ github.actor }}
-          footer: 'Severity: Informational'
-          text: Deployment for app succeed
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+            severity: info
+            username: FullStackOpen_Pokedex
+            description: New version of Pokedex deployed on https://full-stack-open-pokedex-e0i8.onrender.com/ by ${{ github.actor }}
+            footer: 'Severity: Informational'
+            text: Deployment for app succeed
+            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
