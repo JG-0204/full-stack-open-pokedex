@@ -40,7 +40,8 @@ jobs:
           retention-days: 30
       - name: Trigger deployment
         if: ${{ github.event_name == 'push' && env.ON_SKIP == 'false' }}
-        run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_I }}?key=${{ secrets.RENDER_API_KEY }}
+        # RENDER_SERVICE_ID
+        run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE }}?key=${{ secrets.RENDER_API_KEY }}
       - name: On deployment failure
         if: ${{ failure() }}
         uses: sarisia/actions-status-discord@33dfe58bd6a779c49926a82a2c008bab1ca733ee
