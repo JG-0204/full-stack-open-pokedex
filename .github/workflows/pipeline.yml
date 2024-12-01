@@ -43,12 +43,14 @@ jobs:
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
       - name: On deployment failure
         if: ${{ failure() }}
-        uses: rjstone/discord-webhook-notify@v1.0.4
+        uses: sarisia/actions-status-discord@33dfe58bd6a779c49926a82a2c008bab1ca733ee
         with:
-          username: FSOPokedex
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          username: 'FSOPokedex'
+          nodetail: true
+          status: 'failure'
           description: Commit ${{ env.COMMIT_URL }} by ${{ github.actor }} broke the build.
-          text: Build failed
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          content: 'Build failed.'
 
   tag_release:
     needs: simple_deployment_pipeline
@@ -69,10 +71,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: On deployment success
         if: ${{ success() }}
-        uses: rjstone/discord-webhook-notify@v1.0.4
+        uses: sarisia/actions-status-discord@33dfe58bd6a779c49926a82a2c008bab1ca733ee
         with:
-          severity: info
-          username: FSOPokedex
-          description: New version of Pokedex deployed on https://full-stack-open-pokedex-e0i8.onrender.com/ by ${{ github.actor }}
-          text: Deployment for app succeed
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          username: 'FSOPokedex'
+          nodetail: true
+          status: 'success'
+          description: New version of Pokedex deployed on [here](https://full-stack-open-pokedex-e0i8.onrender.com/) by ${{ github.actor }}
+          content: 'Deployment successful.'
