@@ -2,6 +2,7 @@ name: Deployment pipeline
 
 env:
   ON_SKIP: ${{ contains(join(github.event.commits.*.message), '#skip') }}
+  COMMIT_URL: ${{ github.repositoryUrl}}/commit/${{ github.workflow_sha }}
 
 on:
   push:
@@ -40,6 +41,17 @@ jobs:
       - name: Trigger deployment
         if: ${{ github.event_name == 'push' && env.ON_SKIP == 'false' }}
         run:  curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
+      - name: On deployment failure
+        if: ${{ failure() }}
+        uses: rjstone/discord-webhook-notify@89b0bf43c2c8514f70d0dcba4a706b904e8a3112
+        with:
+            severity: error
+            username: FullStackOpen_Pokedex
+            description: Commit ${{ env.COMMIT_URL }} by ${{ github.actor }} broke the build.
+            text: Build failed
+            footer: 'Severity: Error'
+            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+  
   tag_release:
     needs: simple_deployment_pipeline
     runs-on: ubuntu-20.04 
@@ -51,3 +63,19 @@ jobs:
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
+  
+  on_deployment_success:
+    needs: tag_release
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: On deployment success
+      if: ${{ success() }}
+      uses: rjstone/discord-webhook-notify@89b0bf43c2c8514f70d0dcba4a706b904e8a3112
+      with: 
+          severity: info
+          username: FullStackOpen_Pokedex
+          description: New version of Pokedex deployed on https://full-stack-open-pokedex-e0i8.onrender.com/ by ${{ github.actor }}
+          footer: 'Severity: Informational'
+          text: Deployment for app succeed
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
