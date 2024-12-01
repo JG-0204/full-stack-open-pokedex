@@ -55,7 +55,7 @@ jobs:
       - name: Health Check
         uses: jtalk/url-health-check-action@b716ccb6645355dd9fcce8002ce460e5474f7f00
         with:
-          url: https://full-stack-open-pokedex-e0i8.onrender.com/health
+          url: https://full-stack-open-pokedex-e0i8.onrender.com/healthz
           max-attemps: 3
       - name: On health check failure
         if: ${{ failure() }}
@@ -75,7 +75,7 @@ jobs:
           username: 'FSOPokedex'
           title: 'Health check information'
           nodetail: true
-          status: 'failure'
+          status: 'success'
           description: 'Health check passed'
 
   # tag_release:
