@@ -2,7 +2,7 @@ name: Deployment pipeline
 
 env:
   ON_SKIP: ${{ contains(join(github.event.commits.*.message), '#skip') }}
-  COMMIT_URL: ${{ github.repositoryUrl}}/commit/${{ github.workflow_sha }}
+  COMMIT_URL: ${{ https://github.com/JG-0204/full-stack-open-pokedex/commit/${{ github.sha }}
 
 on:
   push:
@@ -20,12 +20,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Install dependencies 
-        run: npm install  
+      - name: Install dependencies
+        run: npm install
       - name: Check style
         run: npm run eslint
       - name: build
-        run : npm run build
+        run: npm run build
       - name: test
         run: npm test
       - name: Install playwright browsers
@@ -40,39 +40,39 @@ jobs:
           retention-days: 30
       - name: Trigger deployment
         if: ${{ github.event_name == 'push' && env.ON_SKIP == 'false' }}
-        run:  curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
+        run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
       - name: On deployment failure
         if: ${{ failure() }}
         uses: rjstone/discord-webhook-notify@89b0bf43c2c8514f70d0dcba4a706b904e8a3112
         with:
-            severity: error
-            username: FullStackOpen_Pokedex
-            description: Commit ${{ env.COMMIT_URL }} by ${{ github.actor }} broke the build.
-            text: Build failed
-            footer: 'Severity: Error'
-            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-  
+          severity: error
+          username: FullStackOpen_Pokedex
+          description: Commit ${{ env.COMMIT_URL }} by ${{ github.actor }} broke the build.
+          text: Build failed
+          footer: 'Severity: Error'
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+
   tag_release:
     needs: simple_deployment_pipeline
-    runs-on: ubuntu-20.04 
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
       - name: Bump version and push tag
         if: ${{ github.event_name == 'push' && env.ON_SKIP == 'false' }}
         uses: anothrNick/github-tag-action@f278d49d30cdd8775cc3e7dd00b5ee11686ee297
-        env: 
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
-  
+
   on_deployment_success:
     needs: tag_release
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
       - name: On deployment success
-      if: ${{ success() }}
-      uses: rjstone/discord-webhook-notify@89b0bf43c2c8514f70d0dcba4a706b904e8a3112
-      with: 
+        if: ${{ success() }}
+        uses: rjstone/discord-webhook-notify@89b0bf43c2c8514f70d0dcba4a706b904e8a3112
+        with:
           severity: info
           username: FullStackOpen_Pokedex
           description: New version of Pokedex deployed on https://full-stack-open-pokedex-e0i8.onrender.com/ by ${{ github.actor }}
