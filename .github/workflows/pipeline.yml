@@ -47,6 +47,7 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           username: 'FSOPokedex'
+          title: 'Something went wrong.'
           nodetail: true
           status: 'failure'
           description: Commit ${{ env.COMMIT_URL }} by ${{ github.actor }} broke the build.
@@ -74,6 +75,7 @@ jobs:
         uses: sarisia/actions-status-discord@33dfe58bd6a779c49926a82a2c008bab1ca733ee
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          title: 'Build success'
           username: 'FSOPokedex'
           nodetail: true
           status: 'success'
