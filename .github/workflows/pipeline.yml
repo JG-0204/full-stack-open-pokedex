@@ -6,14 +6,13 @@ env:
 
 on:
   schedule:
-    - cron: '30 16 1 12 0'
+    - cron: '35 16 1 12 0'
   push:
     branches:
       - main
   pull_request:
     branches: [main]
     types: [opened, synchronize]
-
 
 jobs:
   simple_deployment_pipeline:
@@ -55,7 +54,39 @@ jobs:
       #     status: 'failure'
       #     description: Commit ${{ env.COMMIT_URL }} by ${{ github.actor }} broke the build.
       #     content: 'Something went wrong'
-
+  health_check:
+    needs: simple_deployment_pipeline
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Health Check
+        if: ${{ github.event.schedule == '35 16 1 12 0' }}
+        uses: jtalk/url-health-check-action@b716ccb6645355dd9fcce8002ce460e5474f7f00
+        with:
+          url: https://full-stack-open-pokedex-e0i8.onrender.com/health
+          max-attemps: 3
+      - name: On health check failure
+        if: ${{ failure() }}
+        uses: sarisia/actions-status-discord@33dfe58bd6a779c49926a82a2c008bab1ca733ee
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          username: 'FSOPokedex'
+          title: 'Health check information'
+          nodetail: true
+          status: 'failure'
+          description: 'Health check failed'
+          content: 'FSOPokedex health check'
+      - name: On health check success
+        if: ${{ success() }}
+        uses: sarisia/actions-status-discord@33dfe58bd6a779c49926a82a2c008bab1ca733ee
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          username: 'FSOPokedex'
+          title: 'Health check information'
+          nodetail: true
+          status: 'success'
+          description: 'Health check passed'
+          content: 'FSOPokedex health check (test, should run at 16:30)'
 
     # tag_release:
     #   needs: simple_deployment_pipeline
@@ -85,38 +116,3 @@ jobs:
     #         status: 'success'
     #         description: New version of Pokedex deployed on [here](https://full-stack-open-pokedex-e0i8.onrender.com/) by ${{ github.actor }}
     #         content: 'Deployment successful.'
-   
-
-    health_check:
-      needs: simple_deployment_pipeline
-      runs-on: ubuntu-20.04
-      steps:
-        - uses: actions/checkout@v4
-        - name: Health Check
-        if: ${{ github.event.schedule == '30 16 1 12 0' }}
-        uses: jtalk/url-health-check-action@b716ccb6645355dd9fcce8002ce460e5474f7f00
-        with:
-          url: https://full-stack-open-pokedex-e0i8.onrender.com/health
-          max-attemps: 3
-      - name: On health check failure
-        if: ${{ failure() }}
-        uses: sarisia/actions-status-discord@33dfe58bd6a779c49926a82a2c008bab1ca733ee
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          username: 'FSOPokedex'
-          title: 'Health check information'
-          nodetail: true
-          status: 'failure'
-          description: 'Health check failed'
-          content: 'FSOPokedex health check'
-      - name: On health check success
-        if: ${{ success() }}
-        uses: sarisia/actions-status-discord@33dfe58bd6a779c49926a82a2c008bab1ca733ee
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          username: 'FSOPokedex'
-          title: 'Health check information'
-          nodetail: true
-          status: 'success'
-          description: 'Health check passed'
-          content: 'FSOPokedex health check (test, should run at 16:30)'
