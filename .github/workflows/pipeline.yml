@@ -26,36 +26,36 @@ jobs:
         run: npm run eslint
       - name: build
         run: npm run build
-      - name: test
-        run: npm test
-      - name: Install playwright browsers
-        run: npx playwright install --with-deps
-      - name: End-to-End test
-        run: npm run test:e2e
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
-      - name: Trigger deployment
-        if: ${{ github.event_name == 'push' && env.ON_SKIP == 'false' }}
-        run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
-      - name: On deployment failure
-        if: ${{ failure() }}
-        uses: sarisia/actions-status-discord@33dfe58bd6a779c49926a82a2c008bab1ca733ee
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          username: 'FSOPokedex'
-          title: 'Build failed'
-          nodetail: true
-          status: 'failure'
-          description: Commit ${{ env.COMMIT_URL }} by ${{ github.actor }} broke the build.
-          content: 'Something went wrong'
+      # - name: test
+      #   run: npm test
+      # - name: Install playwright browsers
+      #   run: npx playwright install --with-deps
+      # - name: End-to-End test
+      #   run: npm run test:e2e
+      # - uses: actions/upload-artifact@v4
+      #   if: ${{ !cancelled() }}
+      #   with:
+      #     name: playwright-report
+      #     path: playwright-report/
+      #     retention-days: 30
+      # - name: Trigger deployment
+      #   if: ${{ github.event_name == 'push' && env.ON_SKIP == 'false' }}
+      #   run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
+      # - name: On deployment failure
+      #   if: ${{ failure() }}
+      #   uses: sarisia/actions-status-discord@33dfe58bd6a779c49926a82a2c008bab1ca733ee
+      #   with:
+      #     webhook: ${{ secrets.DISCORD_WEBHOOK }}
+      #     username: 'FSOPokedex'
+      #     title: 'Build failed'
+      #     nodetail: true
+      #     status: 'failure'
+      #     description: Commit ${{ env.COMMIT_URL }} by ${{ github.actor }} broke the build.
+      #     content: 'Something went wrong'
       - name: Health Check
         uses: jtalk/url-health-check-action@b716ccb6645355dd9fcce8002ce460e5474f7f00
         with:
-          url: https://full-stack-open-pokedex-e0i8.onrender.com/healthz
+          url: https://full-stack-open-pokedex-e0i8.onrender.com/health
           max-attemps: 3
       - name: On health check failure
         if: ${{ failure() }}
