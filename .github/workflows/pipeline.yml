@@ -71,7 +71,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: On deployment success
-        if: ${{ !failure() }}
+        if: ${{ !failure() && env.ON_SKIP == 'false'}}
         uses: sarisia/actions-status-discord@33dfe58bd6a779c49926a82a2c008bab1ca733ee
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
