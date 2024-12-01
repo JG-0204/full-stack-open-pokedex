@@ -2,7 +2,7 @@ name: Application health check
 
 on:
   schedule:
-    - cron: '45/5 * * * *'
+    - cron: '55,0,5,10 * * * *'
 
 jobs:
   health_check:
@@ -35,4 +35,4 @@ jobs:
           nodetail: true
           status: 'success'
           description: 'Health check passed'
-          content: 'FSOPokedex health check (test, should run every 5 mins starting at 16:45)'
+          content: 'FSOPokedex health check (test, should run every 5 mins starting at minute 55)'
